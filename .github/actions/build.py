@@ -17,7 +17,7 @@ helper_dir = os.path.dirname(__file__)
 if __name__ == "__main__":
 
     host_profile_path = None
-    check_call("conan profile detect", shell=True)
+    check_call("conan profile detect -f", shell=True)
     check_call("conan config install %s" % os.path.join(helper_dir, "global.conf"), shell=True)
     #check_call("conan config install -tf extensions/hooks %s" % os.path.join(helper_dir, "hook_clean_cache.py"), shell=True)
 
