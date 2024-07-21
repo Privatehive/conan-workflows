@@ -45,7 +45,7 @@ jobs:
       - name: "Clone conan workflow helper"
         uses: actions/checkout@v4
         with:
-          repository: "https://github.com/Privatehive/conan-workflows.git"
+          repository: "Privatehive/conan-workflows"
           path: 'conan_workflow_helper'
           ref: 'master'
       - name: "Conan create package"
