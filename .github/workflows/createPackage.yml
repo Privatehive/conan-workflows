@@ -29,7 +29,10 @@ on:
 
 jobs:
   create:
-    name: "Create"
+    name: "Create package"
+    defaults:
+      run:
+        shell: "/entrypoint.sh {0}"
     runs-on: ${{ inputs.runs-on }}
     container:
       image: ${{ inputs.image }}
@@ -51,7 +54,6 @@ jobs:
           path: 'conan_workflow_helper'
           ref: 'master'
       - name: "Conan create package"
-        #shell: python
         run: python ./conan_workflow_helper/.github/actions/build.py
         env:
           CONAN_HOST_PROFILE: "conan_workflow_helper/${{ inputs.conan_host_profile }}"
