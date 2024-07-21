@@ -49,8 +49,8 @@ jobs:
           path: 'conan_workflow_helper'
           ref: 'master'
       - name: "Conan create package"
-        shell: python
-        run: ./conan_workflow_helper/.github/actions/build.py
+        #shell: python
+        run: python ./conan_workflow_helper/.github/actions/build.py
         env:
           CONAN_HOST_PROFILE: "conan_workflow_helper/${{ inputs.conan_host_profile }}"
           CONAN_RECIPE_PATH: ${{ inputs.conan_recipe_path }}
