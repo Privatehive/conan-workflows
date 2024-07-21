@@ -3,18 +3,18 @@ on:
   workflow_call:
     inputs:
       image:
-        required: true
+        required: false
         type: string
         default: "ghcr.io/tereius/conan-ubuntu:latest"
       runs-on:
-        required: true
+        required: false
         type: string
         default: "ubuntu-latest"
       conan_host_profile:
         required: false
         type: string
       conan_recipe_path:
-        required: true
+        required: false
         type: string
         default: "./"
       conan_remotes:
