@@ -1,0 +1,58 @@
+name: "Create Conan Package"
+on:
+  workflow_call:
+    inputs:
+      image:
+        required: true
+        type: string
+        default: "ghcr.io/tereius/conan-ubuntu:latest"
+      runs-on:
+        required: true
+        type: string
+        default: "ubuntu-latest"
+      conan_host_profile:
+        required: false
+        type: string
+      conan_recipe_path:
+        required: true
+        type: string
+        default: "./"
+      conan_remotes:
+        required: false
+        type: string
+      conan_options:
+        required: false
+        type: string
+    #secrets:
+    #  conan_remote_secret:
+    #    required: false
+
+jobs:
+  create:
+    name: "Create"
+    runs-on: ${{ inputs.runs-on }}
+    container:
+      image: ${{ inputs.image }}
+    steps:
+      - name: "Get workflow version"
+        id: workflow-version
+        uses: canonical/get-workflow-version-action@a5d53b08d254a157ea441c9819ea5002ffc12edc
+        with:
+          # Repository where reusable workflow is located
+          repository-name: Privatehive/conan-workflows
+          # Name of reusable workflow
+          file-name: createPackage.yaml
+      - name: "Clone conan workflow helper"
+        uses: actions/checkout@v4
+        with:
+          repository: "https://github.com/Privatehive/conan-workflows.git"
+          path: 'conan_workflow_helper'
+          ref: '${{ steps.workflow-version.outputs.sha }}'
+      - name: "Conan create package"
+        shell: python
+        run: ./conan_workflow_helper/.github/actions/build.py
+        env:
+          CONAN_HOST_PROFILE: "conan_workflow_helper/${{ inputs.conan_host_profile }}"
+          CONAN_RECIPE_PATH: ${{ inputs.conan_recipe_path }}
+          CONAN_REMOTES: ${{ inputs.conan_remotes }}
+          CONAN_OPTIONS: ${{ inputs.conan_options }}
