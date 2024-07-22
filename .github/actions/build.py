@@ -21,7 +21,7 @@ if __name__ == "__main__":
     check_call("conan config install %s" % os.path.join(helper_dir, "global.conf"), shell=True)
     #check_call("conan config install -tf extensions/hooks %s" % os.path.join(helper_dir, "hook_clean_cache.py"), shell=True)
 
-    if 'CONAN_HOST_PROFILE_PATH' in os.environ:
+    if 'CONAN_HOST_PROFILE_PATH' in os.environ and os.environ['CONAN_HOST_PROFILE_PATH']:
         host_profile_path = os.environ['CONAN_HOST_PROFILE_PATH']
 
     recipe_path = "./"
