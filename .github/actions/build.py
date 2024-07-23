@@ -36,7 +36,7 @@ if __name__ == "__main__":
             check_call("conan remote add --index 0 --force %s %s" % (rep_name, remote), shell=True)
 
     options = ""
-    if 'CONAN_OPTIONS' in os.environ:
+    if 'CONAN_OPTIONS' in os.environ and os.environ['CONAN_OPTIONS']:
         for option in os.environ['CONAN_OPTIONS'].split(','):
             options += " -o " + option
 
