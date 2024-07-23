@@ -12,10 +12,8 @@ on:
     secrets:
       conan_upload_password:
         required: false
-        type: string
       conan_upload_login:
         required: false
-        type: string
 
 jobs:
   create:
