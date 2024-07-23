@@ -10,10 +10,10 @@ on:
         required: false
         type: string
     secrets:
-      conan_password:
+      conan_upload_password:
         required: false
         type: string
-      conan_login:
+      conan_upload_login:
         required: false
         type: string
 
@@ -40,5 +40,5 @@ jobs:
         env:
           CONAN_RECIPE_PATH: ${{ inputs.conan_recipe_path }}
           CONAN_UPLOAD: ${{ inputs.conan_upload_remote }}
-          CONAN_PASSWORD: ${{ secrets.conan_password }}
-          CONAN_LOGIN_USERNAME: ${{ secrets.conan_login }}
+          CONAN_PASSWORD: ${{ secrets.conan_upload_password }}
+          CONAN_LOGIN_USERNAME: ${{ secrets.conan_upload_login }}
