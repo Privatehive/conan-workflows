@@ -6,7 +6,7 @@ on:
         required: false
         type: string
         default: "./"
-      conan_upload_remotes:
+      conan_upload_remote:
         required: false
         type: string
     secrets:
@@ -39,6 +39,6 @@ jobs:
         run: /entrypoint.sh python ./conan_workflow_helper/.github/actions/upload.py
         env:
           CONAN_RECIPE_PATH: ${{ inputs.conan_recipe_path }}
-          CONAN_UPLOAD: ${{ inputs.conan_upload_remotes }}
+          CONAN_UPLOAD: ${{ inputs.conan_upload_remote }}
           CONAN_PASSWORD: ${{ secrets.conan_password }}
           CONAN_LOGIN_USERNAME: ${{ secrets.conan_login }}
