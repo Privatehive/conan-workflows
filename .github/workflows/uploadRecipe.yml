@@ -1,0 +1,44 @@
+name: "Upload Conan Recipe"
+on:
+  workflow_call:
+    inputs:
+      conan_recipe_path:
+        required: false
+        type: string
+        default: "./"
+      conan_upload_remotes:
+        required: false
+        type: string
+    secrets:
+      conan_password:
+        required: false
+        type: string
+      conan_login:
+        required: false
+        type: string
+
+jobs:
+  create:
+    name: "Upload recipe"
+    defaults:
+      run:
+        shell: bash -e {0}
+    runs-on: self-hosted
+    container:
+      image: "ghcr.io/tereius/conan-ubuntu:latest"
+    steps:
+      - name: "Clone repository"
+        uses: actions/checkout@v4
+      - name: "Clone conan workflow helper"
+        uses: actions/checkout@v4
+        with:
+          repository: "Privatehive/conan-workflows"
+          path: 'conan_workflow_helper'
+          ref: 'master'
+      - name: "Upload"
+        run: /entrypoint.sh python ./conan_workflow_helper/.github/actions/upload.py
+        env:
+          CONAN_RECIPE_PATH: ${{ inputs.conan_recipe_path }}
+          CONAN_UPLOAD: ${{ inputs.conan_upload_remotes }}
+          CONAN_PASSWORD: ${{ secrets.conan_password }}
+          CONAN_LOGIN_USERNAME: ${{ secrets.conan_login }}
