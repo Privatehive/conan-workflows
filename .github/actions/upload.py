@@ -45,6 +45,10 @@ if __name__ == "__main__":
 
     package_ref = "%s/%s@%s/%s" % (name, version, user, cannel)
 
+    f = open("conan_package_ref", "w")
+    f.write(package_ref)
+    f.close()
+
     print("Exporting recipe: " + package_ref)
     check_call("conan export %s" % recipe_path, shell=True)
     if upload_all:
