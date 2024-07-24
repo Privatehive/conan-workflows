@@ -24,6 +24,8 @@ jobs:
     runs-on: self-hosted
     container:
       image: "ghcr.io/tereius/conan-ubuntu:latest"
+    outputs:
+      package_ref: ${{ steps.cache-package-ref.outputs.package_ref }}
     steps:
       - name: "Clone repository"
         uses: actions/checkout@v4
@@ -42,13 +44,13 @@ jobs:
           CONAN_LOGIN_USERNAME: ${{ secrets.conan_upload_login }}
       - name: "Set package ref output"
         id: cache-package-ref
-        run: echo "PACKAGE_REF=$(cat conan_package_ref)" >> "$GITHUB_OUTPUT"
+        run: echo "package_ref=$(cat conan_package_ref)" >> "$GITHUB_OUTPUT"
 
   label:
     name: "Set repo property"
     needs: [create]
     runs-on: ubuntu-latest
     steps:
-      - run: "gh api --method PATCH -H 'Accept: application/vnd.github+json' -H 'X-GitHub-Api-Version: 2022-11-28' /repos/${{ github.repository }}/properties/values -f 'properties[][conan-package]=${{ steps.cache-package-ref.outputs.PACKAGE_REF }}'"
+      - run: "gh api --method PATCH -H 'Accept: application/vnd.github+json' -H 'X-GitHub-Api-Version: 2022-11-28' /repos/${{ github.repository }}/properties/values -f 'properties[][conan-package]=${{ needs.create.outputs.package_ref }}'"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
