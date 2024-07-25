@@ -55,18 +55,6 @@ jobs:
         with:
           app-id: ${{ secrets.install_token_app_id }}
           private-key: ${{ secrets.install_token_secret }}
-      - name: "Set repo property"
+      - name: 'Set repo property "conan-package"'
         if:  ${{ steps.generate-token.outputs.token != '' }}
         run: "curl -L -X PATCH -H 'Accept: application/vnd.github+json' -H 'Authorization: Bearer ${{ steps.generate-token.outputs.token }}' -H 'X-GitHub-Api-Version: 2022-11-28' https://api.github.com/repos/${{ github.repository }}/properties/values -d '{\"properties\": [{\"property_name\":\"conan-package\",\"value\":\"${{ steps.cache-package-ref.outputs.package_ref }}\"}]}'"
-      - name: "Set repo property via org"
-        if:  ${{ steps.generate-token.outputs.token != '' }}
-        run: "curl -L -X PATCH -H 'Accept: application/vnd.github+json' -H 'Authorization: Bearer ${{ steps.generate-token.outputs.token }}' -H 'X-GitHub-Api-Version: 2022-11-28' https://api.github.com/orgs/${{ github.repository_owner }}/properties/values -d '{\"repository_names\":[\"${{ github.event.repository.name }}\"],\"properties\":[{\"property_name\":\"conan-package\",\"value\":\"${{ steps.cache-package-ref.outputs.package_ref }}\"}]}'"
-
-  #label:
-  #  name: "Set repo property"
-  #  needs: [create]
-  #  runs-on: ubuntu-latest
-  #  steps:
-  #    - run: "gh api --method PATCH -H 'Accept: application/vnd.github+json' -H 'X-GitHub-Api-Version: 2022-11-28' /repos/${{ github.repository }}/properties/values -f 'properties[][property_name]=conan-package' -f 'properties[][value]=${{ needs.create.outputs.package_ref }}'"
-  #      env:
-  #        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
