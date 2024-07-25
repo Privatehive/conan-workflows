@@ -51,7 +51,6 @@ jobs:
         run: echo "package_ref=$(cat conan_package_ref)" >> "$GITHUB_OUTPUT"
       - name: "Generate install token"
         id: generate-token
-        if:  ${{ secrets.install_token_secret != '' }}
         uses: actions/create-github-app-token@v1
         with:
           app-id: ${{ secrets.install_token_app_id }}
