@@ -5,8 +5,9 @@ LABEL org.opencontainers.image.description="This image provides a wine environme
 LABEL org.opencontainers.image.source="https://github.com/Privatehive/g-spot-runner-github-actions"
 LABEL org.opencontainers.image.url="https://github.com/Privatehive/g-spot-runner-github-actions/pkgs/container/conan-wine"
 
+ARG CONAN_VERSION="2.3.1"
 RUN useradd -d /home/conan -u 10000 conan
-RUN wine64 pip install conan==2.3.1
+RUN wine64 pip install conan==$CONAN_VERSION
 
 USER conan
 WORKDIR /home/conan

@@ -29,9 +29,11 @@ jobs:
           push: true
           sbom: false
           provenance: false
+          build-args: ["CONAN_VERSION=2.3.1"]
           tags: |
             ghcr.io/privatehive/conan-ubuntu:latest
             ghcr.io/privatehive/conan-ubuntu:${{ github.ref_name }}
+            ghcr.io/privatehive/conan-ubuntu:v2.3.1
 
   build_conan_wine_image:
     name: "Build/Push Wine Docker Image"
@@ -60,6 +62,8 @@ jobs:
           push: true
           sbom: false
           provenance: false
+          build-args: ["CONAN_VERSION=2.3.1"]
           tags: |
             ghcr.io/privatehive/conan-wine:latest
             ghcr.io/privatehive/conan-wine:${{ github.ref_name }}
+            ghcr.io/privatehive/conan-ubuntu:v2.3.1
