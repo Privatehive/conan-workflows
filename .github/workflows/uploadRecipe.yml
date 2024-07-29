@@ -31,7 +31,7 @@ jobs:
         shell: bash -e {0}
     runs-on: self-hosted
     container:
-      image: "ghcr.io/Privatehive/conan-ubuntu:latest"
+      image: "ghcr.io/privatehive/conan-ubuntu:latest"
     outputs:
       package_ref: ${{ steps.cache-package-ref.outputs.package_ref }}
     steps:
