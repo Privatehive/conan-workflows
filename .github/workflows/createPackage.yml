@@ -5,7 +5,7 @@ on:
       image:
         required: false
         type: string
-        default: "ghcr.io/tereius/conan-ubuntu:latest"
+        default: "ghcr.io/Privatehive/conan-ubuntu:latest"
       runs-on:
         required: false
         type: string
@@ -23,9 +23,6 @@ on:
       conan_options:
         required: false
         type: string
-    #secrets:
-    #  conan_remote_secret:
-    #    required: false
 
 jobs:
   create:
