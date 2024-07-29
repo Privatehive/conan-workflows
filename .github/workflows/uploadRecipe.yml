@@ -12,7 +12,7 @@ on:
       publish_property:
         required: false
         type: boolean
-        default: false
+        default: true
     secrets:
       conan_upload_password:
         required: false
