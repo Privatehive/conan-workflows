@@ -2,7 +2,7 @@
 
 [![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/Privatehive/conan-workflows/main.yml?branch=master&style=flat&logo=github&label=Docker+build)](https://github.com/Privatehive/conan-workflows/actions?query=branch%3Amaster)
 
-**This shared GitHub workflows help you to build/pload conan packages**
+**This shared GitHub workflows help you to build/upload conan packages**
 
 ### hostProfiles
 
@@ -56,6 +56,9 @@ jobs:
 Use this shared GitHub workflow to upload a Conan recipe to a remote
 
 ``` yml
+jobs:
+  build_linux: ...
+
   upload_recipe:
     name: "Finalize"
     uses: Privatehive/conan-workflows/.github/workflows/uploadRecipe.yml@master
@@ -72,7 +75,7 @@ Use this shared GitHub workflow to upload a Conan recipe to a remote
 | runs-on             | `ubuntu-latest`                           | You probably have to use 'self-hosted' here and use the [Google Cloud hosted runner](https://github.com/Privatehive/g-spot-runner-github-actions). This runner runs the CI jobs with the same user uid like in the Docker Container. |
 | conan_recipe_path   | `./`                                      | The relative path pointing to the directory where `conanfile.py` is located.                                                                                                                                                         |
 | conan_upload_remote | `""`                                      | The remote where the recipe will be uploaded to.                                                                                                                                                                                     |
-| publish_property    | `true`                                    | If `true` a custom property `conan-package` will be set to the recipe ref. Make sure the custom property is enabled in the GitHub organization.                                                                                      |
+| publish_property    | `true`                                    | If `true` a custom property `conan-package` will be set containing the recipe ref. Make sure the custom property is enabled in the GitHub organization.                                                                                      |
 
 | secret parameter      | default | description                                                                                             |
 | --------------------- | ------- | ------------------------------------------------------------------------------------------------------- |
