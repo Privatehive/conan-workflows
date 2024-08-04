@@ -9,6 +9,6 @@ build_type=Release
 [options]
 qt/*:opengl=es2
 [tool_requires]
-android-ndk/r26b@com.github.tereius/stable
+android-ndk/r26b@de.privatehive/stable
 android-sdk/latest@com.github.tereius/stable
 openjdk/19.0.2@com.github.tereius/stable
