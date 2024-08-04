@@ -40,6 +40,10 @@ if __name__ == "__main__":
         for option in os.environ['CONAN_OPTIONS'].split(','):
             options += " -o " + option
 
+    if 'CONAN_BUILD_REQUIRE' in os.environ and host_profile_path and os.environ['CONAN_BUILD_REQUIRE'] == "true":
+        print("build-require option is used")
+        options += " --build-require"
+
     name = json.loads(check_output("conan inspect %s -f json" % recipe_path, shell=True).decode("ascii"))["name"]
     version = json.loads(check_output("conan inspect %s -f json" % recipe_path, shell=True).decode("ascii"))["version"]
     user = json.loads(check_output("conan inspect %s -f json" % recipe_path, shell=True).decode("ascii"))["user"]
