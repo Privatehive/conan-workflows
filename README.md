@@ -29,6 +29,9 @@ Contains a Dockerfile that provides a conan environment to build binaries for Wi
 
 Use this shared GitHub workflow to create a Conan package
 
+> [!NOTE]
+> This workflow is intendet to run on a [gcp-hosted-github-runner](https://github.com/Privatehive/gcp-hosted-github-runner). It won't work on the GitHub hosted runner!
+
 ``` yml
 jobs:
   build_linux:
@@ -36,25 +39,27 @@ jobs:
     uses: Privatehive/conan-workflows/.github/workflows/createPackage.yml@master
     with:
       image: "ghcr.io/tereius/conan-ubuntu:latest"
-      runs-on: self-hosted
       conan_host_profile: "androidArmv8"
       conan_remotes: https://conan.privatehive.de/artifactory/api/conan/public-conan
       conan_options: "qt/*:shared=True,qt/*:qtbase=True"
 ```
 
-| input parameter     | default                                           | description                                                                                                                                                                                                                          |
-| ------------------- | ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| image               | `ghcr.io/privatehive/conan-ubuntu:latest`         | The Docker Image to use to build the conan package. Use one of [conan-ubuntu](#docker/ubuntu), [conan-wine](#docker/wine).                                                                                                           |
-| runs-on             | `ubuntu-latest`                                   | You probably have to use 'self-hosted' here and use the [Google Cloud hosted runner](https://github.com/Privatehive/g-spot-runner-github-actions). This runner runs the CI jobs with the same user uid like in the Docker Container. |
-| conan_host_profile  | if ommited the conan default profile will be used | One of the [hostProfiles](#hostProfiles) (omit the `.profile` suffix - e.g. `androidArmv8`).                                                                                                                                         |
-| conan_build_require | false                                             | Will run a "--build-require" build. Only has an effect if `conan_host_profile` is provided.                                                                                                                                          |
-| conan_recipe_path   | `./`                                              | The relative path pointing to the directory where `conanfile.py` is located.                                                                                                                                                         |
-| conan_remotes       | `""`                                              | Comma separated list of conan remotes.                                                                                                                                                                                               |
-| conan_options       | `""`                                              | Comma separated list of conan options e.g.: `qt/*:shared=True,qt/*:GUI=True`.                                                                                                                                                        |
+| input parameter     | default                                           | description                                                                                                                |
+| ------------------- | ------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| image               | `ghcr.io/privatehive/conan-ubuntu:latest`         | The Docker Image to use to build the conan package. Use one of [conan-ubuntu](#docker/ubuntu), [conan-wine](#docker/wine). |
+| machine_type        | `""`                                              | Provide a GCE machine type e.g. c2d-standard-8                                                                             |
+| conan_host_profile  | if ommited the conan default profile will be used | One of the [hostProfiles](#hostProfiles) (omit the `.profile` suffix - e.g. `androidArmv8`).                               |
+| conan_build_require | false                                             | Will run a "--build-require" build. Only has an effect if `conan_host_profile` is provided.                                |
+| conan_recipe_path   | `./`                                              | The relative path pointing to the directory where `conanfile.py` is located.                                               |
+| conan_remotes       | `""`                                              | Comma separated list of conan remotes.                                                                                     |
+| conan_options       | `""`                                              | Comma separated list of conan options e.g.: `qt/*:shared=True,qt/*:GUI=True`.                                              |
 
 ### .github/workflows/uploadPackage.yml
 
 Use this shared GitHub workflow to upload a Conan recipe to a remote
+
+> [!NOTE]
+> This workflow is intendet to run on a [gcp-hosted-github-runner](https://github.com/Privatehive/gcp-hosted-github-runner). It won't work on the GitHub hosted runner!
 
 ``` yml
 jobs:
@@ -73,7 +78,6 @@ jobs:
 | input parameter     | default                                   | description                                                                                                                                                                                                                          |
 | ------------------- | ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | image               | `ghcr.io/privatehive/conan-ubuntu:latest` | The Docker Image to use to build the conan package. Use one of [conan-ubuntu](#docker/ubuntu), [conan-wine](#docker/wine).                                                                                                           |
-| runs-on             | `ubuntu-latest`                           | You probably have to use 'self-hosted' here and use the [Google Cloud hosted runner](https://github.com/Privatehive/g-spot-runner-github-actions). This runner runs the CI jobs with the same user uid like in the Docker Container. |
 | conan_recipe_path   | `./`                                      | The relative path pointing to the directory where `conanfile.py` is located.                                                                                                                                                         |
 | conan_upload_remote | `""`                                      | The remote where the recipe will be uploaded to.                                                                                                                                                                                     |
 | publish_property    | `true`                                    | If `true` a custom property `conan-package` will be set containing the recipe ref. Make sure the custom property is enabled in the GitHub organization.                                                                              |
