@@ -6,10 +6,10 @@ on:
         required: false
         type: string
         default: "ghcr.io/privatehive/conan-ubuntu:latest"
-      runs-on:
+      machine_type:
         required: false
         type: string
-        default: "ubuntu-latest"
+        default: ""
       conan_host_profile:
         required: false
         type: string
@@ -34,7 +34,7 @@ jobs:
     defaults:
       run:
         shell: bash -e {0}
-    runs-on: ${{ inputs.runs-on }}
+    runs-on: ${{ inputs.machine_type != '' && ["self-hosted", format('@machine:{0}', inputs.machine_type)] || ["self-hosted"] }}
     container:
       image: ${{ inputs.image }}
     steps:
