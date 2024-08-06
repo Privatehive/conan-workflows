@@ -34,7 +34,7 @@ jobs:
     defaults:
       run:
         shell: bash -e {0}
-    runs-on: ${{ inputs.machine_type != '' && ["self-hosted", format('@machine:{0}', inputs.machine_type)] || ["self-hosted"] }}
+    runs-on: [self-hosted, "${{ inputs.machine_type != '' && format('@machine:{0}', inputs.machine_type) || '' }}"]
     container:
       image: ${{ inputs.image }}
     steps:
