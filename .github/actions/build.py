@@ -44,6 +44,10 @@ if __name__ == "__main__":
         print("build-require option is used")
         options += " --build-require"
 
+    deploy_path = None
+    if 'CONAN_DEPLOY_PATH' in os.environ and os.environ['CONAN_DEPLOY_PATH']:
+        deploy_path = os.environ['CONAN_DEPLOY_PATH']
+
     name = json.loads(check_output("conan inspect %s -f json" % recipe_path, shell=True).decode("ascii"))["name"]
     version = json.loads(check_output("conan inspect %s -f json" % recipe_path, shell=True).decode("ascii"))["version"]
     user = json.loads(check_output("conan inspect %s -f json" % recipe_path, shell=True).decode("ascii"))["user"]
@@ -54,7 +58,12 @@ if __name__ == "__main__":
     if host_profile_path is not None:
         print("Cross building recipe: " + package_ref)
         check_call("conan create %s -pr:h \"%s\" -tf \"\" %s -u -b missing" % (recipe_path, host_profile_path, options), shell=True)
+        if deploy_path is not None:
+            check_call("conan install --requires=\"%s\" -pr:h \"%s\" %s --deployer-package=\"%s/*\" --deployer-folder=\"%s\"" % (package_ref, host_profile_path, options, name, deploy_path), shell=True)
     else:
         print("Building recipe: " + package_ref)
         check_call("conan create %s -tf \"\" %s -u -b missing" % (recipe_path, options), shell=True)
+        if deploy_path is not None:
+            check_call("conan install --requires=\"%s\" %s --deployer-package=\"%s/*\" --deployer-folder=\"%s\"" % (package_ref, options, name, deploy_path), shell=True)
+
     print("-----Finished-----")

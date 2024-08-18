@@ -27,6 +27,9 @@ on:
         required: false
         type: boolean
         default: false
+      conan_deploy_path:
+        required: false
+        type: string
 
 jobs:
   create:
@@ -62,3 +65,4 @@ jobs:
           CONAN_REMOTES: ${{ inputs.conan_remotes }}
           CONAN_OPTIONS: ${{ inputs.conan_options }}
           CONAN_BUILD_REQUIRE: ${{ inputs.conan_build_require }}
+          CONAN_DEPLOY_PATH: ${{ inputs.conan_deploy_path }}

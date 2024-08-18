@@ -53,6 +53,7 @@ jobs:
 | conan_recipe_path   | `./`                                              | The relative path pointing to the directory where `conanfile.py` is located.                                               |
 | conan_remotes       | `""`                                              | Comma separated list of conan remotes.                                                                                     |
 | conan_options       | `""`                                              | Comma separated list of conan options e.g.: `qt/*:shared=True,qt/*:GUI=True`.                                              |
+| conan_deploy_path   | `""`                                              | If provided, conan deploy() will be invoked and the output is saved at the given path.                                     |
 
 ### .github/workflows/uploadPackage.yml
 
@@ -75,12 +76,12 @@ jobs:
       conan_upload_remote: https://conan.privatehive.de/artifactory/api/conan/public-conan
 ```
 
-| input parameter     | default                                   | description                                                                                                                                                                                                                          |
-| ------------------- | ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| image               | `ghcr.io/privatehive/conan-ubuntu:latest` | The Docker Image to use to build the conan package. Use one of [conan-ubuntu](#docker/ubuntu), [conan-wine](#docker/wine).                                                                                                           |
-| conan_recipe_path   | `./`                                      | The relative path pointing to the directory where `conanfile.py` is located.                                                                                                                                                         |
-| conan_upload_remote | `""`                                      | The remote where the recipe will be uploaded to.                                                                                                                                                                                     |
-| publish_property    | `true`                                    | If `true` a custom property `conan-package` will be set containing the recipe ref. Make sure the custom property is enabled in the GitHub organization.                                                                              |
+| input parameter     | default                                   | description                                                                                                                                             |
+| ------------------- | ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| image               | `ghcr.io/privatehive/conan-ubuntu:latest` | The Docker Image to use to build the conan package. Use one of [conan-ubuntu](#docker/ubuntu), [conan-wine](#docker/wine).                              |
+| conan_recipe_path   | `./`                                      | The relative path pointing to the directory where `conanfile.py` is located.                                                                            |
+| conan_upload_remote | `""`                                      | The remote where the recipe will be uploaded to.                                                                                                        |
+| publish_property    | `true`                                    | If `true` a custom property `conan-package` will be set containing the recipe ref. Make sure the custom property is enabled in the GitHub organization. |
 
 | secret parameter      | default | description                                                                                             |
 | --------------------- | ------- | ------------------------------------------------------------------------------------------------------- |
