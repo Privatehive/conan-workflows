@@ -44,16 +44,16 @@ jobs:
       conan_options: "qt/*:shared=True,qt/*:qtbase=True"
 ```
 
-| input parameter     | default                                           | description                                                                                                                |
-| ------------------- | ------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| image               | `ghcr.io/privatehive/conan-ubuntu:latest`         | The Docker Image to use to build the conan package. Use one of [conan-ubuntu](#docker/ubuntu), [conan-wine](#docker/wine). |
-| machine_type        | `""`                                              | Provide a GCE machine type e.g. c2d-standard-8                                                                             |
-| conan_host_profile  | if ommited the conan default profile will be used | One of the [hostProfiles](#hostProfiles) (omit the `.profile` suffix - e.g. `androidArmv8`).                               |
-| conan_build_require | false                                             | Will run a "--build-require" build. Only has an effect if `conan_host_profile` is provided.                                |
-| conan_recipe_path   | `./`                                              | The relative path pointing to the directory where `conanfile.py` is located.                                               |
-| conan_remotes       | `""`                                              | Comma separated list of conan remotes.                                                                                     |
-| conan_options       | `""`                                              | Comma separated list of conan options e.g.: `qt/*:shared=True,qt/*:GUI=True`.                                              |
-| conan_deploy_path   | `""`                                              | If provided, conan deploy() will be invoked and the output is saved at the given path.                                     |
+| input parameter        | default                                           | description                                                                                                                |
+| ---------------------- | ------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| image                  | `ghcr.io/privatehive/conan-ubuntu:latest`         | The Docker Image to use to build the conan package. Use one of [conan-ubuntu](#docker/ubuntu), [conan-wine](#docker/wine). |
+| machine_type           | `""`                                              | Provide a GCE machine type e.g. c2d-standard-8                                                                             |
+| conan_host_profile     | if ommited the conan default profile will be used | One of the [hostProfiles](#hostProfiles) (omit the `.profile` suffix - e.g. `androidArmv8`).                               |
+| conan_build_require    | false                                             | Will run a "--build-require" build. Only has an effect if `conan_host_profile` is provided.                                |
+| conan_recipe_path      | `./`                                              | The relative path pointing to the directory where `conanfile.py` is located.                                               |
+| conan_remotes          | `""`                                              | Comma separated list of conan remotes.                                                                                     |
+| conan_options          | `""`                                              | Comma separated list of conan options e.g.: `qt/*:shared=True,qt/*:GUI=True`.                                              |
+| conan_deploy_artifacts | false                                             | If equals true, conan deploy() will be invoked and the output is saved as an artifact.                                     |
 
 ### .github/workflows/uploadPackage.yml
 
