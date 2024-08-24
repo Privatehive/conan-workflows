@@ -27,6 +27,9 @@ on:
         required: false
         type: boolean
         default: false
+      conan_deploy_artifacts:
+        required: false
+        type: boolean
 
 jobs:
   create:
@@ -62,3 +65,12 @@ jobs:
           CONAN_REMOTES: ${{ inputs.conan_remotes }}
           CONAN_OPTIONS: ${{ inputs.conan_options }}
           CONAN_BUILD_REQUIRE: ${{ inputs.conan_build_require }}
+          CONAN_DEPLOY_PATH: ${{ inputs.conan_deploy_artifacts && './artifacts_out' || '' }}
+      - name: "Upload artifacts"
+        if: ${{ inputs.conan_deploy_artifacts }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: conan-package-artifacts
+          path: ./artifacts_out/*
+          overwrite: true
+
