@@ -42,7 +42,7 @@ jobs:
         with:
           repository: "Privatehive/conan-workflows"
           path: 'conan_workflow_helper'
-          ref: 'dev'
+          ref: 'master'
       - name: "Upload"
         run: /entrypoint.sh python ./conan_workflow_helper/.github/actions/upload.py
         env:
