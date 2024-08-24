@@ -56,7 +56,7 @@ jobs:
         with:
           repository: "Privatehive/conan-workflows"
           path: 'conan_workflow_helper'
-          ref: 'master'
+          ref: 'dev'
       - name: "Conan create package"
         run: /entrypoint.sh python ./conan_workflow_helper/.github/actions/build.py
         env:
