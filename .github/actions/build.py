@@ -29,7 +29,7 @@ if __name__ == "__main__":
     if 'CONAN_RECIPE_PATH' in os.environ:
         recipe_path = os.environ['CONAN_RECIPE_PATH']
 
-    if 'CONAN_REMOTES' in os.environ:
+    if 'CONAN_REMOTES' in os.environ and os.environ['CONAN_REMOTES']:
         for remote in os.environ['CONAN_REMOTES'].split(','):
             rep_name = randomString()
             print("Adding remote: " + rep_name + " url: " + remote)
