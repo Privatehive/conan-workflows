@@ -31,9 +31,10 @@ if __name__ == "__main__":
 
     if 'CONAN_REMOTES' in os.environ and os.environ['CONAN_REMOTES']:
         for remote in os.environ['CONAN_REMOTES'].split(','):
-            rep_name = randomString()
-            print("Adding remote: " + rep_name + " url: " + remote)
-            check_call("conan remote add --index 0 --force %s %s" % (rep_name, remote), shell=True)
+            if remote:
+                rep_name = randomString()
+                print("Adding remote: " + rep_name + " url: " + remote)
+                check_call("conan remote add --index 0 --force %s %s" % (rep_name, remote), shell=True)
 
     options = ""
     if 'CONAN_OPTIONS' in os.environ and os.environ['CONAN_OPTIONS']:
