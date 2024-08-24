@@ -71,6 +71,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: conan-package-artifacts
-          path: ./artifacts_out/*
+          path: ./artifacts_out
           overwrite: true
 
