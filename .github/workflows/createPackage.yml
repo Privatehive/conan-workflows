@@ -5,11 +5,7 @@ on:
       image:
         required: false
         type: string
-        default: "ghcr.io/privatehive/conan-ubuntu:latest"
-      machine_type:
-        required: false
-        type: string
-        default: ""
+        default: "ubuntu-latest"
       conan_host_profile:
         required: false
         type: string
@@ -34,12 +30,7 @@ on:
 jobs:
   create:
     name: "Create package"
-    defaults:
-      run:
-        shell: bash -e {0}
-    runs-on: ${{ inputs.machine_type != '' && fromJSON(format('["self-hosted", "@machine:{0}"]', inputs.machine_type)) || fromJSON('["self-hosted"]') }}
-    container:
-      image: ${{ inputs.image }}
+    runs-on: ${{ inputs.image }}
     steps:
       #- name: "Get workflow version"
       #  id: workflow-version
@@ -49,6 +40,10 @@ jobs:
       #    repository-name: Privatehive/conan-workflows
       #    # Name of reusable workflow
       #    file-name: createPackage.yaml
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.8'
+      - run: pip install conan==2.6.0
       - name: "Clone repository"
         uses: actions/checkout@v4
       - name: "Clone conan workflow helper"
@@ -58,7 +53,7 @@ jobs:
           path: 'conan_workflow_helper'
           ref: 'master'
       - name: "Conan create package"
-        run: /entrypoint.sh python ./conan_workflow_helper/.github/actions/build.py
+        run: python ./conan_workflow_helper/.github/actions/build.py
         env:
           CONAN_HOST_PROFILE_PATH: ${{ inputs.conan_host_profile != '' && format('conan_workflow_helper/hostProfiles/{0}.{1}', inputs.conan_host_profile, 'profile') || '' }}
           CONAN_RECIPE_PATH: ${{ inputs.conan_recipe_path }}
