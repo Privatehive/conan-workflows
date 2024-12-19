@@ -1,0 +1,71 @@
+name: "Create Conan Package"
+on:
+  workflow_call:
+    inputs:
+      image:
+        required: false
+        type: string
+        default: "ubuntu-latest"
+      conan_host_profile:
+        required: false
+        type: string
+      conan_recipe_path:
+        required: false
+        type: string
+        default: "./"
+      conan_remotes:
+        required: false
+        type: string
+      conan_options:
+        required: false
+        type: string
+      conan_build_require:
+        required: false
+        type: boolean
+        default: false
+      conan_deploy_artifacts:
+        required: false
+        type: boolean
+
+jobs:
+  create:
+    name: "Create package"
+    runs-on: ${{ inputs.image }}
+    steps:
+      #- name: "Get workflow version"
+      #  id: workflow-version
+      #  uses: canonical/get-workflow-version-action@a5d53b08d254a157ea441c9819ea5002ffc12edc
+      #  with:
+      #    # Repository where reusable workflow is located
+      #    repository-name: Privatehive/conan-workflows
+      #    # Name of reusable workflow
+      #    file-name: createPackage.yaml
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: pip install conan==2.6.0
+      - name: "Clone repository"
+        uses: actions/checkout@v4
+      - name: "Clone conan workflow helper"
+        uses: actions/checkout@v4
+        with:
+          repository: "Privatehive/conan-workflows"
+          path: 'conan_workflow_helper'
+          ref: 'master'
+      - name: "Conan create package"
+        run: python ./conan_workflow_helper/.github/actions/build.py
+        env:
+          CONAN_HOST_PROFILE_PATH: ${{ inputs.conan_host_profile != '' && format('conan_workflow_helper/hostProfiles/{0}.{1}', inputs.conan_host_profile, 'profile') || '' }}
+          CONAN_RECIPE_PATH: ${{ inputs.conan_recipe_path }}
+          CONAN_REMOTES: ${{ inputs.conan_remotes }}
+          CONAN_OPTIONS: ${{ inputs.conan_options }}
+          CONAN_BUILD_REQUIRE: ${{ inputs.conan_build_require }}
+          CONAN_DEPLOY_PATH: ${{ inputs.conan_deploy_artifacts && './artifacts_out' || '' }}
+      - name: "Upload artifacts"
+        if: ${{ inputs.conan_deploy_artifacts }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: conan-package-artifacts
+          path: ./artifacts_out
+          overwrite: true
+
