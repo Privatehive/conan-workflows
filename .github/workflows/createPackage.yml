@@ -6,6 +6,14 @@ on:
         required: false
         type: string
         default: "ubuntu-latest"
+      export_conan_cache:
+        required: false
+        type: boolean
+        default: false
+      import_conan_cache:
+        required: false
+        type: boolean
+        default: false
       conan_host_profile:
         required: false
         type: string
@@ -43,7 +51,20 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12.8'
-      - run: pip install conan==2.6.0
+      - name: "Install conan"
+        run: pip install conan==2.6.0
+      - name: "Download conan cache"
+        if: ${{ inputs.import_conan_cache }}
+        uses: actions/cache@v4
+        with:
+          path: conan_cache.tgz
+          key: ${{ runner.os }}-${{ github.sha }}
+          fail-on-cache-miss: true
+      - name: "Import conan cache"
+        if: ${{ inputs.import_conan_cache }}
+        run: |
+          conan cache restore conan_cache.tgz
+          python -c "import os; os.remove('conan_cache.tgz')"
       - name: "Clone repository"
         uses: actions/checkout@v4
       - name: "Clone conan workflow helper"
@@ -68,4 +89,12 @@ jobs:
           name: conan-package-artifacts
           path: ./artifacts_out
           overwrite: true
-
+      - name: "Export conan cache"
+        if: ${{ inputs.export_conan_cache }}
+        run: conan cache save --file conan_cache.tgz "*/*:*"
+      - name: "Upload conan cache"
+        if: ${{ inputs.export_conan_cache }}
+        uses: actions/cache@v4
+        with:
+          path: conan_cache.tgz
+          key: ${{ runner.os }}-${{ github.sha }}
