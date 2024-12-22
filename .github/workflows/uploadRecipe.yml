@@ -34,7 +34,7 @@ jobs:
         with:
           python-version: '3.12.8'
       - name: "Install conan"
-        run: pip install conan==2.6.0
+        run: pip install conan==2.11.0
       - name: "Clone repository"
         uses: actions/checkout@v4
       - name: "Clone conan workflow helper"

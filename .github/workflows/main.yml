@@ -29,10 +29,10 @@ jobs:
           push: true
           sbom: false
           provenance: false
-          build-args: "CONAN_VERSION=2.6.0"
+          build-args: "CONAN_VERSION=2.11.0"
           tags: |
             ghcr.io/privatehive/conan-ubuntu:${{ github.ref_name }}
-            ghcr.io/privatehive/conan-ubuntu:v2.6.0
+            ghcr.io/privatehive/conan-ubuntu:v2.11.0
             ${{ github.ref == 'refs/heads/master' && 'ghcr.io/privatehive/conan-ubuntu:latest' || '' }}
 
   build_conan_wine_image:
@@ -62,10 +62,10 @@ jobs:
           push: true
           sbom: false
           provenance: false
-          build-args: "CONAN_VERSION=2.6.0"
+          build-args: "CONAN_VERSION=2.11.0"
           tags: |
             ghcr.io/privatehive/conan-wine:${{ github.ref_name }}
-            ghcr.io/privatehive/conan-wine:v2.6.0
+            ghcr.io/privatehive/conan-wine:v2.11.0
             ${{ github.ref == 'refs/heads/master' && 'ghcr.io/privatehive/conan-wine:latest' || '' }}
 
   build_conan_wine_msys2_image:
@@ -95,8 +95,8 @@ jobs:
           push: true
           sbom: false
           provenance: false
-          build-args: "CONAN_VERSION=2.6.0"
+          build-args: "CONAN_VERSION=2.11.0"
           tags: |
             ghcr.io/privatehive/conan-wine-msys2:${{ github.ref_name }}
-            ghcr.io/privatehive/conan-wine-msys2:v2.6.0
+            ghcr.io/privatehive/conan-wine-msys2:v2.11.0
             ${{ github.ref == 'refs/heads/master' && 'ghcr.io/privatehive/conan-wine-msys2:latest' || '' }}
