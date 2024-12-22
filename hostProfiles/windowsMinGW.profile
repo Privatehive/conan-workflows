@@ -7,6 +7,6 @@ compiler.libcxx=libstdc++11
 compiler.threads=posix
 compiler.exception=seh
 build_type=Release
-[options]
 [tool_requires]
+cmake/3.23.5
 mingw-builds/13.2.0

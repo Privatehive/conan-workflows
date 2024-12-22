@@ -9,4 +9,5 @@ build_type=Release
 qt/*:opengl=es2
 raspberry-pi-os/*:os=buster
 [tool_requires]
+cmake/3.23.5
 raspberry-pi-os/0.0.9@com.github.tereius/stable
