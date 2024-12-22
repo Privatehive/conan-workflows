@@ -24,17 +24,17 @@ on:
         required: false
 
 jobs:
-  create:
+  upload:
     name: "Upload recipe"
-    defaults:
-      run:
-        shell: bash -e {0}
-    runs-on: self-hosted
-    container:
-      image: "ghcr.io/privatehive/conan-ubuntu:latest"
+    runs-on: ubuntu-latest
     outputs:
       package_ref: ${{ steps.cache-package-ref.outputs.package_ref }}
     steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.8'
+      - name: "Install conan"
+        run: pip install conan==2.6.0
       - name: "Clone repository"
         uses: actions/checkout@v4
       - name: "Clone conan workflow helper"
@@ -44,7 +44,7 @@ jobs:
           path: 'conan_workflow_helper'
           ref: 'master'
       - name: "Upload"
-        run: /entrypoint.sh python ./conan_workflow_helper/.github/actions/upload.py
+        run: python ./conan_workflow_helper/.github/actions/upload.py
         env:
           CONAN_RECIPE_PATH: ${{ inputs.conan_recipe_path }}
           CONAN_UPLOAD: ${{ inputs.conan_upload_remote }}

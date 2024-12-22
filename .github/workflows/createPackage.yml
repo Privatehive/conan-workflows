@@ -2,6 +2,10 @@ name: "Create Conan Package"
 on:
   workflow_call:
     inputs:
+      name:
+        required: false
+        type: string
+        default: "Create package"
       image:
         required: false
         type: string
@@ -37,7 +41,7 @@ on:
 
 jobs:
   create:
-    name: "Create package"
+    name: ${{ inputs.name }}
     runs-on: ${{ inputs.image }}
     steps:
       #- name: "Get workflow version"
