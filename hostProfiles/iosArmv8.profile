@@ -1,6 +1,8 @@
 [settings]
 os=iOS
+os.version=18.0
 os.sdk=iphoneos
+os.sdk_version=18.0
 arch=armv8
 compiler=apple-clang
 compiler.cppstd=gnu17
