@@ -88,32 +88,32 @@ jobs:
     permissions:
       packages: write
     steps:
-      - name: "Clone repository"
-        uses: actions/checkout@v4
-      - name: "Set up Docker Buildx"
-        uses: docker/setup-buildx-action@v3
-      - name: "Login to ghcr.io"
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - name: "Build/Push Docker Image"
-        uses: docker/build-push-action@v6
-        env:
-          DOCKER_BUILD_SUMMARY: false
-          DOCKER_BUILD_RECORD_UPLOAD: false
-        with:
-          context: docker/wine-msys2
-          platforms: linux/amd64
-          push: true
-          sbom: false
-          provenance: false
-          build-args: "CONAN_VERSION=2.11.0"
-          tags: |
-            ghcr.io/privatehive/conan-wine-msys2:${{ github.ref_name }}
-            ghcr.io/privatehive/conan-wine-msys2:v2.11.0
-            ${{ github.ref == 'refs/heads/master' && 'ghcr.io/privatehive/conan-wine-msys2:latest' || '' }}
+      # - name: "Clone repository"
+      #   uses: actions/checkout@v4
+      # - name: "Set up Docker Buildx"
+      #   uses: docker/setup-buildx-action@v3
+      # - name: "Login to ghcr.io"
+      #   uses: docker/login-action@v3
+      #   with:
+      #     registry: ghcr.io
+      #     username: ${{ github.actor }}
+      #     password: ${{ secrets.GITHUB_TOKEN }}
+      # - name: "Build/Push Docker Image"
+      #   uses: docker/build-push-action@v6
+      #   env:
+      #     DOCKER_BUILD_SUMMARY: false
+      #     DOCKER_BUILD_RECORD_UPLOAD: false
+      #   with:
+      #     context: docker/wine-msys2
+      #     platforms: linux/amd64
+      #     push: true
+      #     sbom: false
+      #     provenance: false
+      #     build-args: "CONAN_VERSION=2.11.0"
+      #     tags: |
+      #       ghcr.io/privatehive/conan-wine-msys2:${{ github.ref_name }}
+      #       ghcr.io/privatehive/conan-wine-msys2:v2.11.0
+      #       ${{ github.ref == 'refs/heads/master' && 'ghcr.io/privatehive/conan-wine-msys2:latest' || '' }}
       - name: "Delete untagged Docker Images"
         uses: actions/delete-package-versions@v5
         with: 
