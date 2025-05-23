@@ -34,6 +34,13 @@ jobs:
             ghcr.io/privatehive/conan-ubuntu:${{ github.ref_name }}
             ghcr.io/privatehive/conan-ubuntu:v2.11.0
             ${{ github.ref == 'refs/heads/master' && 'ghcr.io/privatehive/conan-ubuntu:latest' || '' }}
+      - name: "Delete untagged Docker Images"
+        uses: actions/delete-package-versions@v5
+        with: 
+          package-name: conan-ubuntu
+          package-type: container
+          delete-only-untagged-versions: true
+          min-versions-to-keep: 0
 
   build_conan_wine_image:
     name: "Build/Push Wine Docker Image"
@@ -67,6 +74,13 @@ jobs:
             ghcr.io/privatehive/conan-wine:${{ github.ref_name }}
             ghcr.io/privatehive/conan-wine:v2.11.0
             ${{ github.ref == 'refs/heads/master' && 'ghcr.io/privatehive/conan-wine:latest' || '' }}
+      - name: "Delete untagged Docker Images"
+        uses: actions/delete-package-versions@v5
+        with: 
+          package-name: conan-wine
+          package-type: container
+          delete-only-untagged-versions: true
+          min-versions-to-keep: 0
 
   build_conan_wine_msys2_image:
     name: "Build/Push Wine plus msys2 Docker Image"
@@ -100,3 +114,10 @@ jobs:
             ghcr.io/privatehive/conan-wine-msys2:${{ github.ref_name }}
             ghcr.io/privatehive/conan-wine-msys2:v2.11.0
             ${{ github.ref == 'refs/heads/master' && 'ghcr.io/privatehive/conan-wine-msys2:latest' || '' }}
+      - name: "Delete untagged Docker Images"
+        uses: actions/delete-package-versions@v5
+        with: 
+          package-name: conan-wine-msys2
+          package-type: container
+          delete-only-untagged-versions: true
+          min-versions-to-keep: 0

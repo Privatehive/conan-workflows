@@ -42,7 +42,7 @@ LABEL org.opencontainers.image.url="https://github.com/Privatehive/g-spot-runner
 
 COPY --from=build /home/wine-git/wine-git-msys-1-x86_64.pkg.tar.zst /tmp/wine_pkg.tar.zst
 RUN pacman -U /tmp/wine_pkg.tar.zst --noconfirm && rm /tmp/wine_pkg.tar.zst
-RUN pacman -S xorg-server-xvfb unzip wget --noconfirm
+RUN pacman -S xorg-server-xvfb vulkan-swrast lib32-vulkan-swrast samba unzip wget --noconfirm
 
 RUN mkdir -p /opt/wineprefix
 ENV WINEDEBUG -all
@@ -56,6 +56,7 @@ RUN xvfb-run sh /tmp/helper/wine-init.sh
 ARG PYTHON_VERSION=3.12.7
 ARG UPX_VERSION=4.2.4
 ARG CONAN_VERSION=2.6.0
+ARG MSYS2_VERSION=20221216
 
 RUN umask 0 && cd /tmp/helper && \
   curl -LOOO \
@@ -74,15 +75,31 @@ RUN umask 0 && xvfb-run sh -c "\
   wine pip install --no-warn-script-location conan==$CONAN_VERSION pyinstaller; \
   wineserver -w"
 
-RUN wget q -O- https://repo.msys2.org/distrib/msys2-x86_64-latest.tar.xz | tar -C "${WINEPREFIX}/drive_c" -xJf -
+#oldest
+#RUN wget q -O- https://github.com/msys2/msys2-installer/releases/download/2020-11-09/msys2-base-x86_64-20201109.tar.xz | tar -C "${WINEPREFIX}/drive_c" -xJf -
+#newest
+#https://github.com/msys2/msys2-installer/releases/download/2021-11-30/msys2-base-x86_64-20211130.tar.xz
+RUN wget q -O- https://github.com/msys2/msys2-installer/releases/download/2021-01-05/msys2-base-x86_64-20210105.tar.xz | tar -C "${WINEPREFIX}/drive_c" -xJf -
+
+RUN sed -i 's/SigLevel    = Required DatabaseOptional/SigLevel = TrustAll DatabaseNever/g' "${WINEPREFIX}/drive_c/msys64/etc/pacman.conf"
+RUN sed -i 's/SigLevel    = Required/SigLevel = TrustAll DatabaseNever/g' "${WINEPREFIX}/drive_c/msys64/etc/pacman.conf"
+
 #RUN cd $WINEPREFIX/drive_c && WINEPATH="c:/msys64/usr/bin" wine64 c:/msys64/usr/bin/bash.exe -c 'pacman --help'
 #wine64 msys.exe in -c -t "C:/msys2"
 
 RUN useradd -d /home/conan -u 10000 conan
+RUN mkdir -p ${WINEPREFIX}/drive_c/drivers/etc
+RUN chown -R conan:conan ${WINEPREFIX}
+
 USER conan
 WORKDIR /home/conan
 COPY --chown=conan:conan --chmod=744 entrypoint.sh /
 COPY --chown=conan:conan --chmod=744 global.conf ${WINEPREFIX}/drive_c/users/conan/.conan2/global.conf
+# initial msys2 setup
+ENV WINEPATH="c:/msys64/usr/bin"
+ENV MSYSTEM=MSYS
+RUN wine64 bash --login -c 'exit'
+RUN wine64 bash -c 'wget https://repo.msys2.org/msys/x86_64/make-4.4.1-1-x86_64.pkg.tar.zst -P /tmp/pkg && pacman -U --noconfirm /tmp/pkg/make-4.4.1-1-x86_64.pkg.tar.zst && rm -r /tmp/pkg'
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["cmd"]
 
