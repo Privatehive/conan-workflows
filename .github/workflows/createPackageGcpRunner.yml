@@ -13,6 +13,15 @@ on:
       conan_host_profile:
         required: false
         type: string
+      conan_build_profile:
+        required: false
+        type: string
+      conan_host_profile_path:
+        required: false
+        type: string
+      conan_build_profile_path:
+        required: false
+        type: string
       conan_recipe_path:
         required: false
         type: string
@@ -60,7 +69,8 @@ jobs:
       - name: "Conan create package"
         run: /entrypoint.sh python ./conan_workflow_helper/.github/actions/build.py
         env:
-          CONAN_HOST_PROFILE_PATH: ${{ inputs.conan_host_profile != '' && format('conan_workflow_helper/hostProfiles/{0}.{1}', inputs.conan_host_profile, 'profile') || '' }}
+          CONAN_HOST_PROFILE_PATH: ${{ inputs.conan_host_profile != '' && format('conan_workflow_helper/hostProfiles/{0}.{1}', inputs.conan_host_profile, 'profile') || (inputs.conan_host_profile_path != '' && inputs.conan_host_profile_path || '') }}
+          CONAN_BUILD_PROFILE_PATH: ${{ inputs.conan_build_profile != '' && format('conan_workflow_helper/hostProfiles/{0}.{1}', inputs.conan_build_profile, 'profile') || (inputs.conan_build_profile_path != '' && inputs.conan_build_profile_path || '') }}
           CONAN_RECIPE_PATH: ${{ inputs.conan_recipe_path }}
           CONAN_REMOTES: ${{ inputs.conan_remotes }}
           CONAN_OPTIONS: ${{ inputs.conan_options }}
