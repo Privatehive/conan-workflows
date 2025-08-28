@@ -44,6 +44,13 @@ if __name__ == "__main__":
                 print("Adding remote: " + rep_name + " url: " + remote)
                 check_call("conan remote add --index 0 --force %s %s" % (rep_name, remote), shell=True)
 
+    remotes = []
+    for remote in json.loads(check_output("conan remote list -f json", shell=True).decode("ascii")):
+        if remote["enabled"] == True:
+            remotes.append(remote["name"])
+
+    print("Active remotes: " + ', '.join(remotes))
+
     if 'CONAN_OPTIONS' in os.environ and os.environ['CONAN_OPTIONS']:
         for option in os.environ['CONAN_OPTIONS'].split(','):
             options += " -o " + option
@@ -60,6 +67,21 @@ if __name__ == "__main__":
     version = json.loads(check_output("conan inspect %s -f json" % recipe_path, shell=True).decode("ascii"))["version"]
     user = json.loads(check_output("conan inspect %s -f json" % recipe_path, shell=True).decode("ascii"))["user"]
     cannel = json.loads(check_output("conan inspect %s -f json" % recipe_path, shell=True).decode("ascii"))["channel"]
+
+    for key, val in json.loads(check_output("conan graph info %s -vquiet -f json" % recipe_path, shell=True).decode("ascii"))["graph"]["resolved_ranges"].items():
+        if val.startswith("qt/"):
+            print("found qt dependency - downloading recipe to search for conan profiles")
+            for remote in remotes:
+                # download recipe containing conan profiles
+                try:
+                    check_output("conan download %s -vquiet -f json --only-recipe -r %s" % (val, remote), shell=True)
+                except Exception:
+                    continue
+                recipe_path = json.loads(check_output("conan cache path %s -vquiet -f json" % val, shell=True).decode("ascii"))["cache_path"]
+                profile_path = os.path.join(recipe_path, 'profiles')
+                print("found conan profiles in qt recipe - installing")
+                if os.path.isdir(profile_path):
+                    check_output("conan config install -tf profiles %s" % profile_path, shell=True)
 
     package_ref = "%s/%s@%s/%s" % (name, version, user, cannel)
 
