@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from subprocess import check_output, check_call
+import tempfile
 import os
 import random
 import string
@@ -73,15 +74,16 @@ if __name__ == "__main__":
             print("found qt dependency - downloading recipe to search for conan profiles")
             for remote in remotes:
                 # download recipe containing conan profiles
-                try:
-                    check_output("conan download %s -vquiet -f json --only-recipe -r %s" % (val, remote), shell=True)
-                except Exception:
-                    continue
-                recipe_path = json.loads(check_output("conan cache path %s -vquiet -f json" % val, shell=True).decode("ascii"))["cache_path"]
-                profile_path = os.path.join(recipe_path, 'profiles')
-                print("found conan profiles in qt recipe - installing")
-                if os.path.isdir(profile_path):
-                    check_output("conan config install -tf profiles %s" % profile_path, shell=True)
+                with tempfile.TemporaryDirectory() as tmpdir:
+                    try:
+                        check_output("conan download %s -vquiet -f json --only-recipe -cc core.cache:storage_path=%s -r %s" % (val, tmpdir, remote), shell=True)
+                    except Exception:
+                        continue
+                    recipe_path = json.loads(check_output("conan cache path %s -vquiet -cc core.cache:storage_path=%s -f json" % (val, tmpdir), shell=True).decode("ascii"))["cache_path"]
+                    profile_path = os.path.join(recipe_path, 'profiles')
+                    print("found conan profiles in qt recipe - installing")
+                    if os.path.isdir(profile_path):
+                        check_output("conan config install -tf profiles %s" % profile_path, shell=True)
 
     package_ref = "%s/%s@%s/%s" % (name, version, user, cannel)
 
