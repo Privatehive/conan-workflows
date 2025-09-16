@@ -104,7 +104,7 @@ jobs:
         if: ${{ inputs.conan_deploy_artifacts }}
         uses: actions/upload-artifact@v4
         with:
-          name: conan-package-artifacts
+          name: ${{ github.job }} artifacts
           path: ./artifacts_out
           overwrite: true
       - name: "Export conan cache"
