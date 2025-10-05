@@ -2,6 +2,10 @@ name: "Upload Conan Recipe"
 on:
   workflow_call:
     inputs:
+      import_conan_cache:
+        required: false
+        type: boolean
+        default: false
       conan_recipe_path:
         required: false
         type: string
@@ -9,6 +13,10 @@ on:
       conan_upload_remote:
         required: false
         type: string
+      upload_include_package:
+        required: false
+        type: boolean
+        default: false
       publish_property:
         required: false
         type: boolean
@@ -35,6 +43,18 @@ jobs:
           python-version: '3.12.8'
       - name: "Install conan"
         run: pip install conan==2.20.0
+      - name: "Download conan cache"
+        if: ${{ inputs.import_conan_cache }}
+        uses: actions/cache@v4
+        with:
+          path: conan_cache.tgz
+          key: ${{ runner.os }}-${{ github.sha }}
+          fail-on-cache-miss: true
+      - name: "Import conan cache"
+        if: ${{ inputs.import_conan_cache }}
+        run: |
+          conan cache restore conan_cache.tgz
+          python -c "import os; os.remove('conan_cache.tgz')"
       - name: "Clone repository"
         uses: actions/checkout@v4
       - name: "Clone conan workflow helper"
@@ -46,6 +66,7 @@ jobs:
       - name: "Upload"
         run: python ./conan_workflow_helper/.github/actions/upload.py
         env:
+          UPLOAD_ALL: ${{ inputs.upload_include_package }}
           CONAN_RECIPE_PATH: ${{ inputs.conan_recipe_path }}
           CONAN_UPLOAD: ${{ inputs.conan_upload_remote }}
           CONAN_PASSWORD: ${{ secrets.conan_upload_password }}

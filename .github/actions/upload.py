@@ -22,7 +22,7 @@ if __name__ == "__main__":
         recipe_path = os.environ['CONAN_RECIPE_PATH']
     
     upload_all = False
-    if 'UPLOAD_ALL' in os.environ:
+    if 'UPLOAD_ALL' in os.environ and os.environ['UPLOAD_ALL'] == 'true':
         upload_all = True
     
     if not 'CONAN_UPLOAD' in os.environ:
