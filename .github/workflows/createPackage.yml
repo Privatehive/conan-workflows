@@ -47,6 +47,9 @@ on:
       conan_deploy_artifacts:
         required: false
         type: boolean
+      conan_artifact_name:
+        required: false
+        type: string
 
 jobs:
   create:
@@ -100,11 +103,15 @@ jobs:
           CONAN_OPTIONS: ${{ inputs.conan_options }}
           CONAN_BUILD_REQUIRE: ${{ inputs.conan_build_require }}
           CONAN_DEPLOY_PATH: ${{ inputs.conan_deploy_artifacts && './artifacts_out' || '' }}
+      - name: "Generate random string"
+        if: ${{ inputs.conan_deploy_artifacts }}
+        id: generate_rand_str
+        run: python -c "import random, string; print('random=' + ''.join(random.choices(string.ascii_lowercase, k=8)))" >> $GITHUB_OUTPUT
       - name: "Upload artifacts"
         if: ${{ inputs.conan_deploy_artifacts }}
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ github.jobs[github.job].name }} artifacts
+          name: ${{ inputs.conan_artifact_name || format('artifact-{0}', steps.generate_rand_str.outputs.random) }}
           path: ./artifacts_out
           overwrite: true
       - name: "Export conan cache"
