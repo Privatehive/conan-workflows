@@ -45,16 +45,20 @@ if __name__ == "__main__":
     if 'CONAN_VERSIONS' in os.environ and os.environ['CONAN_VERSIONS']:
         versions = [v.strip() for v in os.environ['CONAN_VERSIONS'].split(',') if v.strip()]
 
-    version_args = [" --version=%s " % v for v in versions] if versions else [""]
-
-    name = json.loads(check_output("conan inspect %s%s -f json" % (recipe_path, version_args[0]), shell=True).decode("ascii"))["name"]
-    user = json.loads(check_output("conan inspect %s%s -f json" % (recipe_path, version_args[0]), shell=True).decode("ascii"))["user"]
-    cannel = json.loads(check_output("conan inspect %s%s -f json" % (recipe_path, version_args[0]), shell=True).decode("ascii"))["channel"]
+    # "conan inspect" doesn't accept --version, so it's never passed one here.
+    name = json.loads(check_output("conan inspect %s -f json" % recipe_path, shell=True).decode("ascii"))["name"]
+    user = json.loads(check_output("conan inspect %s -f json" % recipe_path, shell=True).decode("ascii"))["user"]
+    cannel = json.loads(check_output("conan inspect %s -f json" % recipe_path, shell=True).decode("ascii"))["channel"]
 
     primary_version = os.environ.get('CONAN_PRIMARY_VERSION') or (versions[-1] if versions else None)
 
-    for version_arg in version_args:
-        version = json.loads(check_output("conan inspect %s%s -f json" % (recipe_path, version_arg), shell=True).decode("ascii"))["version"]
+    if versions:
+        entries = [(v, " --version=%s " % v) for v in versions]
+    else:
+        inspected_version = json.loads(check_output("conan inspect %s -f json" % recipe_path, shell=True).decode("ascii"))["version"]
+        entries = [(inspected_version, "")]
+
+    for version, version_arg in entries:
         package_ref = "%s/%s@%s/%s" % (name, version, user, cannel)
 
         print("Exporting recipe: " + package_ref)

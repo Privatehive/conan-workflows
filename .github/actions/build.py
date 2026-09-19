@@ -70,10 +70,13 @@ if __name__ == "__main__":
     if 'CONAN_DEPLOY_PATH' in os.environ and os.environ['CONAN_DEPLOY_PATH']:
         deploy_path = os.environ['CONAN_DEPLOY_PATH']
 
-    name = json.loads(check_output("conan inspect %s%s -f json" % (recipe_path, version_arg), shell=True).decode("ascii"))["name"]
-    version = json.loads(check_output("conan inspect %s%s -f json" % (recipe_path, version_arg), shell=True).decode("ascii"))["version"]
-    user = json.loads(check_output("conan inspect %s%s -f json" % (recipe_path, version_arg), shell=True).decode("ascii"))["user"]
-    cannel = json.loads(check_output("conan inspect %s%s -f json" % (recipe_path, version_arg), shell=True).decode("ascii"))["channel"]
+    # "conan inspect" doesn't accept --version, so it's never passed version_arg here.
+    # The version comes from CONAN_VERSION when given, falling back to what the recipe
+    # itself declares (inspect reports "version": null when neither is set).
+    name = json.loads(check_output("conan inspect %s -f json" % recipe_path, shell=True).decode("ascii"))["name"]
+    version = os.environ.get('CONAN_VERSION') or json.loads(check_output("conan inspect %s -f json" % recipe_path, shell=True).decode("ascii"))["version"]
+    user = json.loads(check_output("conan inspect %s -f json" % recipe_path, shell=True).decode("ascii"))["user"]
+    cannel = json.loads(check_output("conan inspect %s -f json" % recipe_path, shell=True).decode("ascii"))["channel"]
 
     for key, val in json.loads(check_output("conan graph info %s%s -verror -f json" % (recipe_path, version_arg), shell=True).decode("ascii"))["graph"]["resolved_ranges"].items():
         if val.startswith("qt/"):
