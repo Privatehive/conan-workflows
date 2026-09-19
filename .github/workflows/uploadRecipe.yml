@@ -10,6 +10,12 @@ on:
         required: false
         type: string
         default: "./"
+      conan_versions:
+        required: false
+        type: string
+      conan_primary_version:
+        required: false
+        type: string
       conan_upload_remote:
         required: false
         type: string
@@ -68,6 +74,8 @@ jobs:
         env:
           UPLOAD_ALL: ${{ inputs.upload_include_package }}
           CONAN_RECIPE_PATH: ${{ inputs.conan_recipe_path }}
+          CONAN_VERSIONS: ${{ inputs.conan_versions }}
+          CONAN_PRIMARY_VERSION: ${{ inputs.conan_primary_version }}
           CONAN_UPLOAD: ${{ inputs.conan_upload_remote }}
           CONAN_PASSWORD: ${{ secrets.conan_upload_password }}
           CONAN_LOGIN_USERNAME: ${{ secrets.conan_upload_login }}

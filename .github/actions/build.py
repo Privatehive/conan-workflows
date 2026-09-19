@@ -34,9 +34,15 @@ if __name__ == "__main__":
         options += " -pr:b %s " % build_profile_path
 
     recipe_path = "./"
-      
+
     if 'CONAN_RECIPE_PATH' in os.environ:
         recipe_path = os.environ['CONAN_RECIPE_PATH']
+
+    # allows building a recipe whose version isn't hardcoded in the conanfile (e.g. when
+    # conandata.yml declares sources for several versions and the caller picks one per job)
+    version_arg = ""
+    if 'CONAN_VERSION' in os.environ and os.environ['CONAN_VERSION']:
+        version_arg = " --version=%s " % os.environ['CONAN_VERSION']
 
     if 'CONAN_REMOTES' in os.environ and os.environ['CONAN_REMOTES']:
         for remote in os.environ['CONAN_REMOTES'].split(','):
@@ -64,12 +70,12 @@ if __name__ == "__main__":
     if 'CONAN_DEPLOY_PATH' in os.environ and os.environ['CONAN_DEPLOY_PATH']:
         deploy_path = os.environ['CONAN_DEPLOY_PATH']
 
-    name = json.loads(check_output("conan inspect %s -f json" % recipe_path, shell=True).decode("ascii"))["name"]
-    version = json.loads(check_output("conan inspect %s -f json" % recipe_path, shell=True).decode("ascii"))["version"]
-    user = json.loads(check_output("conan inspect %s -f json" % recipe_path, shell=True).decode("ascii"))["user"]
-    cannel = json.loads(check_output("conan inspect %s -f json" % recipe_path, shell=True).decode("ascii"))["channel"]
+    name = json.loads(check_output("conan inspect %s%s -f json" % (recipe_path, version_arg), shell=True).decode("ascii"))["name"]
+    version = json.loads(check_output("conan inspect %s%s -f json" % (recipe_path, version_arg), shell=True).decode("ascii"))["version"]
+    user = json.loads(check_output("conan inspect %s%s -f json" % (recipe_path, version_arg), shell=True).decode("ascii"))["user"]
+    cannel = json.loads(check_output("conan inspect %s%s -f json" % (recipe_path, version_arg), shell=True).decode("ascii"))["channel"]
 
-    for key, val in json.loads(check_output("conan graph info %s -verror -f json" % recipe_path, shell=True).decode("ascii"))["graph"]["resolved_ranges"].items():
+    for key, val in json.loads(check_output("conan graph info %s%s -verror -f json" % (recipe_path, version_arg), shell=True).decode("ascii"))["graph"]["resolved_ranges"].items():
         if val.startswith("qt/"):
             print("found qt dependency - downloading recipe to search for conan profiles")
             for remote in remotes:
@@ -88,7 +94,7 @@ if __name__ == "__main__":
     package_ref = "%s/%s@%s/%s" % (name, version, user, cannel)
 
     print("Building recipe: " + package_ref)
-    check_call("conan create %s -tf \"\" %s -u -b missing" % (recipe_path, options), shell=True)
+    check_call("conan create %s%s -tf \"\" %s -u -b missing" % (recipe_path, version_arg, options), shell=True)
     if deploy_path is not None:
         check_call("conan install --requires=\"%s\" %s --deployer-package=\"%s/*\" --deployer-folder=\"%s\"" % (package_ref, options, name, deploy_path), shell=True)
 

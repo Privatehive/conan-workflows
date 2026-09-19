@@ -34,6 +34,9 @@ on:
         required: false
         type: string
         default: "./"
+      conan_version:
+        required: false
+        type: string
       conan_remotes:
         required: false
         type: string
@@ -99,6 +102,7 @@ jobs:
           CONAN_HOST_PROFILE_PATH: ${{ inputs.conan_host_profile != '' && format('conan_workflow_helper/hostProfiles/{0}.{1}', inputs.conan_host_profile, 'profile') || (inputs.conan_host_profile_path != '' && inputs.conan_host_profile_path || '') }}
           CONAN_BUILD_PROFILE_PATH: ${{ inputs.conan_build_profile != '' && format('conan_workflow_helper/hostProfiles/{0}.{1}', inputs.conan_build_profile, 'profile') || (inputs.conan_build_profile_path != '' && inputs.conan_build_profile_path || '') }}
           CONAN_RECIPE_PATH: ${{ inputs.conan_recipe_path }}
+          CONAN_VERSION: ${{ inputs.conan_version }}
           CONAN_REMOTES: ${{ inputs.conan_remotes }}
           CONAN_OPTIONS: ${{ inputs.conan_options }}
           CONAN_BUILD_REQUIRE: ${{ inputs.conan_build_require }}

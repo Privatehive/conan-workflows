@@ -38,22 +38,35 @@ if __name__ == "__main__":
     except:
         print("Warning: Couldn't set user credentials for remote")
 
-    name = json.loads(check_output("conan inspect %s -f json" % recipe_path, shell=True).decode("ascii"))["name"]
-    version = json.loads(check_output("conan inspect %s -f json" % recipe_path, shell=True).decode("ascii"))["version"]
-    user = json.loads(check_output("conan inspect %s -f json" % recipe_path, shell=True).decode("ascii"))["user"]
-    cannel = json.loads(check_output("conan inspect %s -f json" % recipe_path, shell=True).decode("ascii"))["channel"]
+    # conan_data.yml may declare sources for several versions at once (no version hardcoded
+    # in the conanfile). CONAN_VERSIONS, if given, is a comma-separated list of versions to
+    # export/upload; otherwise fall back to whatever version the recipe itself declares.
+    versions = []
+    if 'CONAN_VERSIONS' in os.environ and os.environ['CONAN_VERSIONS']:
+        versions = [v.strip() for v in os.environ['CONAN_VERSIONS'].split(',') if v.strip()]
 
-    package_ref = "%s/%s@%s/%s" % (name, version, user, cannel)
+    version_args = [" --version=%s " % v for v in versions] if versions else [""]
 
-    f = open("conan_package_ref", "w")
-    f.write(package_ref)
-    f.close()
+    name = json.loads(check_output("conan inspect %s%s -f json" % (recipe_path, version_args[0]), shell=True).decode("ascii"))["name"]
+    user = json.loads(check_output("conan inspect %s%s -f json" % (recipe_path, version_args[0]), shell=True).decode("ascii"))["user"]
+    cannel = json.loads(check_output("conan inspect %s%s -f json" % (recipe_path, version_args[0]), shell=True).decode("ascii"))["channel"]
 
-    print("Exporting recipe: " + package_ref)
-    check_call("conan export %s" % recipe_path, shell=True)
-    if upload_all:
-        print("Uploading recipe and package: " + package_ref)
-        check_call("conan upload %s -r %s" % (package_ref, rep_name), shell=True)
-    else:
-        print("Uploading recipe: " + package_ref)
-        check_call("conan upload %s -r %s --only-recipe" % (package_ref, rep_name), shell=True)
+    primary_version = os.environ.get('CONAN_PRIMARY_VERSION') or (versions[-1] if versions else None)
+
+    for version_arg in version_args:
+        version = json.loads(check_output("conan inspect %s%s -f json" % (recipe_path, version_arg), shell=True).decode("ascii"))["version"]
+        package_ref = "%s/%s@%s/%s" % (name, version, user, cannel)
+
+        print("Exporting recipe: " + package_ref)
+        check_call("conan export %s%s" % (recipe_path, version_arg), shell=True)
+        if upload_all:
+            print("Uploading recipe and package: " + package_ref)
+            check_call("conan upload %s -r %s" % (package_ref, rep_name), shell=True)
+        else:
+            print("Uploading recipe: " + package_ref)
+            check_call("conan upload %s -r %s --only-recipe" % (package_ref, rep_name), shell=True)
+
+        if primary_version is None or version == primary_version:
+            f = open("conan_package_ref", "w")
+            f.write(package_ref)
+            f.close()
