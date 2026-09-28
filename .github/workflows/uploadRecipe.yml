@@ -6,6 +6,10 @@ on:
         required: false
         type: boolean
         default: false
+      import_conan_cache_key:
+        required: false
+        type: string
+        default: ""
       conan_recipe_path:
         required: false
         type: string
@@ -54,7 +58,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: conan_cache.tgz
-          key: ${{ runner.os }}-${{ github.sha }}
+          key: ${{ inputs.import_conan_cache_key != '' && format('{0}-{1}-{2}', runner.os, github.sha, inputs.import_conan_cache_key) || format('{0}-{1}', runner.os, github.sha) }}
           fail-on-cache-miss: true
       - name: "Import conan cache"
         if: ${{ inputs.import_conan_cache }}
