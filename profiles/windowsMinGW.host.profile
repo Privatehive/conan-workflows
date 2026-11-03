@@ -2,11 +2,13 @@
 os=Windows
 arch=x86_64
 compiler=gcc
-compiler.version=13
+compiler.version=13.2
 compiler.libcxx=libstdc++11
 compiler.threads=posix
 compiler.exception=seh
 build_type=Release
+[options]
+qt/*:opengl=desktop
 [tool_requires]
 cmake/3.23.5
 mingw-builds/13.2.0

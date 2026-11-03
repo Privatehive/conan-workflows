@@ -107,8 +107,8 @@ jobs:
       - name: "Conan create package"
         run: python ./conan_workflow_helper/.github/actions/build.py
         env:
-          CONAN_HOST_PROFILE_PATH: ${{ inputs.conan_host_profile != '' && format('conan_workflow_helper/hostProfiles/{0}.{1}', inputs.conan_host_profile, 'profile') || (inputs.conan_host_profile_path != '' && inputs.conan_host_profile_path || '') }}
-          CONAN_BUILD_PROFILE_PATH: ${{ inputs.conan_build_profile != '' && format('conan_workflow_helper/hostProfiles/{0}.{1}', inputs.conan_build_profile, 'profile') || (inputs.conan_build_profile_path != '' && inputs.conan_build_profile_path || '') }}
+          CONAN_HOST_PROFILE_PATH: ${{ inputs.conan_host_profile != '' && format('conan_workflow_helper/profiles/{0}', inputs.conan_host_profile) || (inputs.conan_host_profile_path != '' && inputs.conan_host_profile_path || '') }}
+          CONAN_BUILD_PROFILE_PATH: ${{ inputs.conan_build_profile != '' && format('conan_workflow_helper/profiles/{0}', inputs.conan_build_profile) || (inputs.conan_build_profile_path != '' && inputs.conan_build_profile_path || '') }}
           CONAN_RECIPE_PATH: ${{ inputs.conan_recipe_path }}
           CONAN_VERSION: ${{ inputs.conan_version }}
           CONAN_REMOTES: ${{ inputs.conan_remotes }}
