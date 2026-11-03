@@ -59,9 +59,9 @@ jobs:
       #    # Name of reusable workflow
       #    file-name: createPackage.yaml
       - name: "Clone repository"
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       - name: "Clone conan workflow helper"
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           repository: "Privatehive/conan-workflows"
           path: 'conan_workflow_helper'
@@ -78,7 +78,7 @@ jobs:
           CONAN_DEPLOY_PATH: ${{ inputs.conan_deploy_artifacts && './artifacts_out' || '' }}
       - name: "Upload artifacts"
         if: ${{ inputs.conan_deploy_artifacts }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: conan-package-artifacts
           path: ./artifacts_out

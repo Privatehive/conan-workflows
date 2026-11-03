@@ -48,14 +48,14 @@ jobs:
     outputs:
       package_ref: ${{ steps.cache-package-ref.outputs.package_ref }}
     steps:
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: '3.12.8'
       - name: "Install conan"
         run: pip install conan==2.20.0
       - name: "Download conan cache"
         if: ${{ inputs.import_conan_cache }}
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: conan_cache.tgz
           key: ${{ inputs.import_conan_cache_key != '' && format('{0}-{1}-{2}', runner.os, github.sha, inputs.import_conan_cache_key) || format('{0}-{1}', runner.os, github.sha) }}
@@ -66,9 +66,9 @@ jobs:
           conan cache restore conan_cache.tgz
           python -c "import os; os.remove('conan_cache.tgz')"
       - name: "Clone repository"
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       - name: "Clone conan workflow helper"
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           repository: "Privatehive/conan-workflows"
           path: 'conan_workflow_helper'
@@ -89,7 +89,7 @@ jobs:
       - name: "Generate install token"
         id: generate-token
         if: ${{ inputs.publish_property }}
-        uses: actions/create-github-app-token@v1
+        uses: actions/create-github-app-token@v3
         with:
           app-id: ${{ secrets.install_token_app_id }}
           private-key: ${{ secrets.install_token_secret }}
